@@ -8,6 +8,17 @@ def emotion_detector(text_to_analyze):
 
     response = requests.post(url, json=input_json, headers=headers)
 
+    # Handle blank input: server returns status code 400
+    if response.status_code == 400:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
+
     # Convert the response text into a dictionary
     formatted_response = json.loads(response.text)
 
@@ -29,7 +40,6 @@ def emotion_detector(text_to_analyze):
     }
     dominant_emotion = max(emotion_scores, key=emotion_scores.get)
 
-    # Return in the required output format
     return {
         'anger': anger_score,
         'disgust': disgust_score,
